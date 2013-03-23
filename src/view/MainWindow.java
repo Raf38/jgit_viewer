@@ -3,23 +3,37 @@ import java.awt.*;
 import javax.swing.*;
 
 
-public class MainWindow {
+public class MainWindow extends JFrame {
 
-	/**
-	 * @param args
-	 */
+	private JPanel 			_mainPanel;
+	private FilePanel 		_filePanel;
+	private CommitPanel 	_commitPanel;
+	private ReferencesPanel _refsPanel;
+	private JSplitPane 		_splitPane;
+	
 	public MainWindow()
 	{
-		JFrame frame = new JFrame("Simple GUI");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JLabel textLabel = new JLabel("I'm a label",SwingConstants.CENTER);
-		textLabel.setPreferredSize(new Dimension(300,100));
-		frame.getContentPane().add(textLabel, BorderLayout.CENTER);
+		setTitle("JGit Viewer");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		_filePanel = new FilePanel();
+		_commitPanel = new CommitPanel();
+		_refsPanel = new ReferencesPanel();
+		
+		_splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,_filePanel,_commitPanel);
+		_mainPanel = (JPanel)getContentPane();
+		_mainPanel.setLayout(new BoxLayout(_mainPanel,BoxLayout.Y_AXIS));
+		_mainPanel.add(_refsPanel);
+		_mainPanel.add(_splitPane);
+		
+		
+		//getContentPane().add(_mainPanel);
 		
 		//display window
-		frame.setLocationRelativeTo(null);
-		frame.pack();
-		frame.setVisible(true);
+		setLocationRelativeTo(null);
+		setPreferredSize(new Dimension(800,600));
+		pack();
+		setVisible(true);
 	}
 
 }
