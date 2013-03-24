@@ -7,7 +7,7 @@ public class MainWindow extends JFrame {
 
 	private JPanel 			_mainPanel;
 	private FilePanel 		_filePanel;
-	private CommitPanel 	_commitPanel;
+	public CommitPanel 	_commitPanel;
 	private ReferencesPanel _refsPanel;
 	private JSplitPane 		_splitPane;
 	
@@ -16,7 +16,7 @@ public class MainWindow extends JFrame {
 		setTitle("JGit Viewer");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		_filePanel = new FilePanel(model);
+		_filePanel = new FilePanel(model, new controller.FileController(model,this));
 		_commitPanel = new CommitPanel(model);
 		_refsPanel = new ReferencesPanel(model);
 		

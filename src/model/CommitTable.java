@@ -6,6 +6,7 @@ import java.util.*;
 public class CommitTable
 {
 	private GitCommandLine _git = null;
+	private String _pathFilter = "";
 	
 	public CommitTable()
 	{
@@ -17,7 +18,7 @@ public class CommitTable
 		Vector<Vector<String>> data = new Vector<Vector<String>>();
 		try
 		{
-			BufferedReader reader = _git.execCommand("log --pretty=format:\"%h,%an,%ar,%s\"");
+			BufferedReader reader = _git.execCommand("log --pretty=format:\"%h,%an,%ar,%s\" -- "+_pathFilter);
 			String line = null;
 			while ((line = reader.readLine()) != null)
 			{
@@ -26,5 +27,10 @@ public class CommitTable
 		}
 		catch (Exception e) {}
 		return data;
+	}
+	
+	public void setPathFilter(String path)
+	{
+		_pathFilter = path;
 	}
 }

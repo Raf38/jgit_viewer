@@ -4,6 +4,8 @@ import java.awt.*;
 import java.util.Vector;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class CommitPanel extends JPanel {
@@ -11,6 +13,9 @@ public class CommitPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private model.Model _model;
+	private JTable _table = null;
+	private Vector<Vector<String>> _tableData = null;
+	private TableModel _tableModel = null;
 	
 	public CommitPanel(model.Model model)
 	{		
@@ -21,11 +26,26 @@ public class CommitPanel extends JPanel {
 		headers.add(headers.size(),"When");
 		headers.add(headers.size(),"Message");
 		
-		Vector<Vector<String>> data = model.commit.getCommitData();
+		_tableData = model.commit.getCommitData();
+		_table = new JTable(_tableData,headers);
 		
-		JTable tree = new JTable(data,headers);
-		
-		JScrollPane scrollPane = new JScrollPane(tree);
+		JScrollPane scrollPane = new JScrollPane(_table);
 		add(scrollPane);
+	}
+	
+	public void refresh()
+	{
+		DefaultTableModel tableModel = (DefaultTableModel)_table.getModel();
+		int numRows = tableModel.getRowCount();
+		for (int n=0;n<numRows;n++)
+		{
+			tableModel.removeRow(0);
+		}
+		_tableData = _model.commit.getCommitData();
+		for (Vector<String> row : _tableData)
+		{
+			tableModel.addRow(row);
+		}
+		tableModel.fireTableDataChanged();
 	}
 }

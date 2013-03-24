@@ -27,4 +27,23 @@ public class References
 		catch (Exception e) {}
 		return data;
 	}
+	
+	public String getCurrentReference()
+	{
+		try
+		{
+			BufferedReader reader = _git.execCommand("branch --all");
+			String line = null;
+			while ((line = reader.readLine()) != null)
+			{
+				String sub = line.substring(0, 2);
+				if (line.substring(0, 2).equals("* "))
+				{
+					return line.substring(2,line.length()).trim();
+				}
+			}
+		}
+		catch (Exception e) {}
+		return "";
+	}
 }

@@ -54,7 +54,6 @@ public class FileTree
 					current = newChild;
 				}
 			}
-			System.out.print(line);
 		}
 		return top;
 	}
