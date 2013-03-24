@@ -2,16 +2,27 @@ package view;
 
 import java.awt.*;
 import javax.swing.*;
+import java.util.*;
 
 public class ReferencesPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	JComboBox<String> _combo = null;
+	model.Model _model = null;
 	
-	public ReferencesPanel()
+	public ReferencesPanel(model.Model model)
 	{
-		JLabel label = new JLabel("References Panel",SwingConstants.CENTER);
-		label.setPreferredSize(new Dimension(300,30));
-		add(label, BorderLayout.CENTER);
+		_model = model;
+		
+		_combo = new JComboBox<String>();
+		Vector<String> references = _model.references.getReferences();
+		for (String s : references)
+		{
+			_combo.addItem(s);
+		}
+		//_combo.addActionListener(new controller.FileFilterActionListener());
+		_combo.setPreferredSize(new Dimension(600,30));
+		add(_combo, BorderLayout.CENTER);
 	}	
 
 }

@@ -18,7 +18,7 @@ public class MainWindow extends JFrame {
 		
 		_filePanel = new FilePanel(model);
 		_commitPanel = new CommitPanel(model);
-		_refsPanel = new ReferencesPanel();
+		_refsPanel = new ReferencesPanel(model);
 		
 		_splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,_filePanel,_commitPanel);
 		_mainPanel = (JPanel)getContentPane();
