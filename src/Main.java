@@ -1,6 +1,6 @@
 import javax.swing.UIManager;
 
-import model.GitCommandLine;
+import model.*;
 
 import view.MainWindow;
 
@@ -10,12 +10,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		model.GitCommandLine git = new GitCommandLine();
-		try
-		{
-			git.execCommand("ls-tree");
-		} catch (Exception e) {}
-		MainWindow w = new MainWindow();
+		MainWindow w = new MainWindow(new model.Model());
 	}
 
 }

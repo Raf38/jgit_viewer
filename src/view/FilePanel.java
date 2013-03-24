@@ -11,9 +11,11 @@ public class FilePanel extends JPanel {
 
 	JComboBox<String> combo = new JComboBox<String>();
 	//JLabel label= new JLabel();
+	model.FileTree _model = null;
 	
-	public FilePanel()
+	public FilePanel(model.Model model)
 	{
+		_model = model.file;
 		//label = new JLabel("File Filter",SwingConstants.CENTER);
 		//textLabel.setPreferredSize(new Dimension(300,100));
 		//frame.getContentPane().add(textLabel, BorderLayout.CENTER);
@@ -26,6 +28,13 @@ public class FilePanel extends JPanel {
 		add(combo);
 		
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Top");
+		try
+		{
+			top = _model.getDepotFileTree();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		
 		JTree tree = new JTree(top);
 		
 		JScrollPane scrollPane = new JScrollPane(tree);

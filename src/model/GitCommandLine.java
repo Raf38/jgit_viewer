@@ -2,8 +2,10 @@ package model;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.*;
 
@@ -16,7 +18,7 @@ public class GitCommandLine
 		_pb = new ProcessBuilder("null");
 	}
 	
-	public BufferedInputStream execCommand(String arguments) throws InterruptedException, IOException, Exception
+	public BufferedReader execCommand(String arguments) throws InterruptedException, IOException, Exception
 	{
 		String command = "/usr/local/bin/git "+arguments;
 		_pb.command(command.split("\\s+"));
@@ -33,7 +35,6 @@ public class GitCommandLine
 		if (p.exitValue()!=0)
 		{
 			InputStream istream = p.getErrorStream();
-			//BufferedInputStream bistream = new BufferedInputStream(istream);
 			byte[] buffer = new byte[1024];
 			int bytesRead = 0;
 			while((bytesRead = istream.read(buffer))>0)
@@ -47,6 +48,6 @@ public class GitCommandLine
 			}
 			throw new Exception();
 		}
-		return new BufferedInputStream(p.getInputStream());
+		return new BufferedReader(new InputStreamReader(p.getInputStream()));
 	}
 }
