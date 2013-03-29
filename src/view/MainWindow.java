@@ -1,5 +1,6 @@
 package view;
 import java.awt.*;
+
 import javax.swing.*;
 
 
@@ -20,10 +21,13 @@ public class MainWindow extends JFrame {
 		_commitPanel = new CommitPanel(model);
 		_refsPanel = new ReferencesPanel(model);
 		
-		_splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,_filePanel,_commitPanel);
+		_splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		_splitPane.setLeftComponent(_filePanel);
+		_splitPane.setRightComponent(_commitPanel);
+		_splitPane.setContinuousLayout(true);
 		_mainPanel = (JPanel)getContentPane();
-		_mainPanel.setLayout(new BoxLayout(_mainPanel,BoxLayout.Y_AXIS));
-		_mainPanel.add(_refsPanel);
+//		_mainPanel.setLayout(new BorderLayout());
+		_mainPanel.add(_refsPanel,BorderLayout.PAGE_START);
 		_mainPanel.add(_splitPane);
 		
 		

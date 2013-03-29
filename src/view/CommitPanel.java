@@ -20,6 +20,7 @@ public class CommitPanel extends JPanel {
 	public CommitPanel(model.Model model)
 	{		
 		_model = model;
+		setLayout(new BorderLayout());
 		Vector<String> headers = new Vector<String>();
 		headers.add(headers.size(),"Commit");
 		headers.add(headers.size(),"Author");
@@ -30,7 +31,7 @@ public class CommitPanel extends JPanel {
 		_table = new JTable(_tableData,headers);
 		
 		JScrollPane scrollPane = new JScrollPane(_table);
-		add(scrollPane);
+		add(scrollPane,BorderLayout.PAGE_START);
 	}
 	
 	public void refresh()

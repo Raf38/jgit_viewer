@@ -13,7 +13,7 @@ public class ReferencesPanel extends JPanel {
 	public ReferencesPanel(model.Model model)
 	{
 		_model = model;
-		
+		setLayout(new BorderLayout());
 		_combo = new JComboBox<String>();
 		String currentReference = _model.references.getCurrentReference();
 		Vector<String> references = _model.references.getReferences();
@@ -25,9 +25,10 @@ public class ReferencesPanel extends JPanel {
 				_combo.setSelectedIndex(_combo.getItemCount()-1);
 			}
 		}
+		_combo.setName("combo name");
 		//_combo.addActionListener(new controller.FileFilterActionListener());
-		_combo.setPreferredSize(new Dimension(600,30));
-		add(_combo, BorderLayout.CENTER);
+		//_combo.setPreferredSize(new Dimension(600,30));
+		add(_combo);
 	}	
 
 }
