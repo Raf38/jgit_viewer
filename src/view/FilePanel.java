@@ -10,8 +10,9 @@ public class FilePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	JComboBox<String> combo = new JComboBox<String>();
-	//JLabel label= new JLabel();
+	JCheckBox _existingCheckbox = null;
+	JCheckBox _deletedCheckbox = null;
+	JTree _tree = null;
 	model.FileTree _model = null;
 	controller.FileController _controller = null;
 	
@@ -19,17 +20,18 @@ public class FilePanel extends JPanel {
 	{
 		_model = model.file;
 		_controller = controller;
-		
-		//label = new JLabel("File Filter",SwingConstants.CENTER);
-		//textLabel.setPreferredSize(new Dimension(300,100));
-		//frame.getContentPane().add(textLabel, BorderLayout.CENTER);
-		
-		combo.addItem("Hide deleted files");
-		combo.addItem("Show deleted files");
-		combo.addActionListener(_controller);
-		combo.setPreferredSize(new Dimension(300,30));
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-		add(combo);
+		
+		_existingCheckbox = new JCheckBox();
+		_existingCheckbox.setText("Show Existing Files");
+		_existingCheckbox.setActionCommand("ExistingToggle");
+		_existingCheckbox.addActionListener(_controller);
+		
+		
+		_deletedCheckbox = new JCheckBox();
+		_deletedCheckbox.setText("Show Deleted Files");
+		_deletedCheckbox.setActionCommand("DeletedToggle");
+		_deletedCheckbox.addActionListener(_controller);
 		
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Top");
 		try
@@ -38,13 +40,21 @@ public class FilePanel extends JPanel {
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
+		_tree = new JTree(top);
+		_tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		_tree.addTreeSelectionListener(_controller);
+		JScrollPane scrollPane = new JScrollPane(_tree);
 		
-		JTree tree = new JTree(top);
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		tree.addTreeSelectionListener(_controller);
+		refresh();
 		
-		JScrollPane scrollPane = new JScrollPane(tree);
+		add(_existingCheckbox);
+		add(_deletedCheckbox);
 		add(scrollPane);
 	}
-
+	
+	public void refresh()
+	{
+		_existingCheckbox.setSelected(_model.showExistingFiles());
+		_deletedCheckbox.setSelected(_model.showDeletedFiles());
+	}
 }

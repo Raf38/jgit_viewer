@@ -1,6 +1,7 @@
 package controller;
 import java.awt.event.*;
 
+import javax.swing.JCheckBox;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -19,7 +20,26 @@ public class FileController implements ActionListener,TreeSelectionListener {
 	
 	public void actionPerformed(ActionEvent e)
 	{
-		System.out.println("event");
+		try
+		{
+			if(e.getActionCommand().equals("ExistingToggle"))
+			{
+				_model.file.showExistingFiles(!_model.file.showExistingFiles());
+			}
+			_view._filePanel.refresh();
+		}
+		catch (Exception ex) {}
+		
+		try
+		{
+			if(e.getActionCommand().equals("DeletedToggle"))
+			{
+				_model.file.showDeletedFiles(!_model.file.showDeletedFiles());
+			}
+			_view._filePanel.refresh();
+		}
+		catch (Exception ex) {}
+		System.out.println("event "+e.getActionCommand());
 	}
 	
 	public void valueChanged(TreeSelectionEvent e)

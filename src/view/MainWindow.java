@@ -6,7 +6,7 @@ import javax.swing.*;
 public class MainWindow extends JFrame {
 
 	private JPanel 			_mainPanel;
-	private FilePanel 		_filePanel;
+	public FilePanel 		_filePanel;
 	public CommitPanel 	_commitPanel;
 	private ReferencesPanel _refsPanel;
 	private JSplitPane 		_splitPane;

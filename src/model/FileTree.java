@@ -8,6 +8,7 @@ import java.util.Vector;
 public class FileTree
 {
 	private boolean _showDeletedFiles = false;
+	private boolean _showExistingFiles = true;
 	private GitCommandLine _git = null;
 	
 	public FileTree()
@@ -19,19 +20,34 @@ public class FileTree
 	{
 		_showDeletedFiles = showDeleted;
 	}
+	public boolean showDeletedFiles()
+	{
+		return _showDeletedFiles;
+	}
+	public void showExistingFiles(boolean showExisting)
+	{
+		_showExistingFiles = showExisting;
+	}
+	public boolean showExistingFiles()
+	{
+		return _showExistingFiles;
+	}
 	
 	public DefaultMutableTreeNode getDepotFileTree() throws Exception
 	{
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Repository");
-		Vector<String> data = _git.execCommand("ls-tree --full-tree -r --name-only -- HEAD");
-		for (String line : data)
+		if (_showExistingFiles)
 		{
-			insertPathIntoTree(top, line.trim());
+			Vector<String> data = _git.execCommand("ls-tree --full-tree -r --name-only -- HEAD");
+			for (String line : data)
+			{
+				insertPathIntoTree(top, line.trim());
+			}
 		}
 		
 		if (_showDeletedFiles)
 		{
-			data = _git.execCommand("log --diff-filter=D --summary HEAD");
+			Vector<String> data = _git.execCommand("log --diff-filter=D --summary HEAD");
 			for (String line : data)
 			{
 				String tokens[] = line.split(" ");
@@ -51,11 +67,6 @@ public class FileTree
 		}
 		
 		return top;
-	}
-	
-	private void insertDeletedFiles(DefaultMutableTreeNode top)
-	{
-		
 	}
 	
 	private void insertPathIntoTree(DefaultMutableTreeNode tree, String path)
