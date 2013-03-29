@@ -1,5 +1,6 @@
 package model;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
 import java.io.*;
@@ -10,10 +11,14 @@ public class FileTree
 	private boolean _showDeletedFiles = false;
 	private boolean _showExistingFiles = true;
 	private GitCommandLine _git = null;
+	private DefaultTreeModel _treeModel;
+	private DefaultMutableTreeNode _treeNode;
 	
 	public FileTree()
 	{
 		_git = new GitCommandLine();
+		_treeNode = new DefaultMutableTreeNode("Repository");
+		_treeModel = new DefaultTreeModel(_treeNode);
 	}
 	
 	public void showDeletedFiles(boolean showDeleted)
@@ -33,40 +38,54 @@ public class FileTree
 		return _showExistingFiles;
 	}
 	
-	public DefaultMutableTreeNode getDepotFileTree() throws Exception
+	public DefaultTreeModel getTreeModel()
+	{
+		return _treeModel;
+	}
+	
+	public void updateTreeModel()
 	{
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Repository");
 		if (_showExistingFiles)
 		{
-			Vector<String> data = _git.execCommand("ls-tree --full-tree -r --name-only -- HEAD");
-			for (String line : data)
+			try
 			{
-				insertPathIntoTree(top, line.trim());
+				Vector<String> data = _git.execCommand("ls-tree --full-tree -r --name-only -- HEAD");
+				for (String line : data)
+				{
+					insertPathIntoTree(top, line.trim());
+				}
 			}
+			catch (Exception e) {}
 		}
 		
 		if (_showDeletedFiles)
 		{
-			Vector<String> data = _git.execCommand("log --diff-filter=D --summary HEAD");
-			for (String line : data)
+			try
 			{
-				String tokens[] = line.split(" ");
-				
-				System.out.println(line);
-				try
+				Vector<String> data = _git.execCommand("log --diff-filter=D --summary HEAD");
+				for (String line : data)
 				{
-					if (tokens.length == 5 && tokens[1].equals("delete") && tokens[2].equals("mode"))
+					String tokens[] = line.split(" ");
+					
+					System.out.println(line);
+					try
 					{
-						insertPathIntoTree(top, tokens[4].trim());
+						if (tokens.length == 5 && tokens[1].equals("delete") && tokens[2].equals("mode"))
+						{
+							insertPathIntoTree(top, tokens[4].trim());
+						}	
+					} catch (Exception e)
+					{
+						System.err.println(e.getMessage());
 					}
-				} catch (Exception e)
-				{
-					System.err.println(e.getMessage());
 				}
 			}
+			catch (Exception e) {}
 		}
 		
-		return top;
+		_treeModel.setRoot(top);
+		_treeModel.reload();
 	}
 	
 	private void insertPathIntoTree(DefaultMutableTreeNode tree, String path)

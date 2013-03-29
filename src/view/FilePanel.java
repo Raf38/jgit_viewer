@@ -33,14 +33,7 @@ public class FilePanel extends JPanel {
 		_deletedCheckbox.setActionCommand("DeletedToggle");
 		_deletedCheckbox.addActionListener(_controller);
 		
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Top");
-		try
-		{
-			top = _model.getDepotFileTree();
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-		_tree = new JTree(top);
+		_tree = new JTree(_model.getTreeModel());
 		_tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		_tree.addTreeSelectionListener(_controller);
 		JScrollPane scrollPane = new JScrollPane(_tree);
@@ -56,5 +49,6 @@ public class FilePanel extends JPanel {
 	{
 		_existingCheckbox.setSelected(_model.showExistingFiles());
 		_deletedCheckbox.setSelected(_model.showDeletedFiles());
+		_model.updateTreeModel();
 	}
 }
