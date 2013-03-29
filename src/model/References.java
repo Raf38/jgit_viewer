@@ -17,9 +17,8 @@ public class References
 		Vector<String> data = new Vector<String>();
 		try
 		{
-			BufferedReader reader = _git.execCommand("branch --all");
-			String line = null;
-			while ((line = reader.readLine()) != null)
+			Vector<String> gitData = _git.execCommand("branch --all");
+			for (String line : gitData)
 			{
 				data.add(data.size(),line.substring(2,line.length()).trim());
 			}
@@ -32,11 +31,9 @@ public class References
 	{
 		try
 		{
-			BufferedReader reader = _git.execCommand("branch --all");
-			String line = null;
-			while ((line = reader.readLine()) != null)
+			Vector<String> gitData = _git.execCommand("branch --all");
+			for (String line : gitData)
 			{
-				String sub = line.substring(0, 2);
 				if (line.substring(0, 2).equals("* "))
 				{
 					return line.substring(2,line.length()).trim();

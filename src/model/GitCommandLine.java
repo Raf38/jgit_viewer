@@ -1,12 +1,8 @@
 package model;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.*;
 
 public class GitCommandLine
@@ -18,10 +14,11 @@ public class GitCommandLine
 		_pb = new ProcessBuilder("null");
 	}
 	
-	public BufferedReader execCommand(String arguments) throws InterruptedException, IOException, Exception
+	public Vector<String> execCommand(String arguments) throws InterruptedException, IOException, Exception
 	{
 		String command = "/usr/local/bin/git "+arguments;
 		_pb.command(command.split("\\s+"));
+		_pb.redirectErrorStream(true);
 		
 		Process p = null;
 		try
@@ -31,23 +28,22 @@ public class GitCommandLine
 		{
 			System.err.println("IOException: "+e.getMessage());
 		}
+		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		Vector<String> output = new Vector<String>();
+		String line = null;
+		while ((line = reader.readLine()) != null)
+		{
+			output.add(line);
+		}
 		p.waitFor();
 		if (p.exitValue()!=0)
 		{
-			InputStream istream = p.getErrorStream();
-			byte[] buffer = new byte[1024];
-			int bytesRead = 0;
-			while((bytesRead = istream.read(buffer))>0)
+			for(String s : output)
 			{
-				System.err.write(buffer, 0, bytesRead);
-			}
-			istream = p.getInputStream();
-			while((bytesRead = istream.read(buffer))>0)
-			{
-				System.err.write(buffer, 0, bytesRead);
+				System.err.print(s);
 			}
 			throw new Exception();
 		}
-		return new BufferedReader(new InputStreamReader(p.getInputStream()));
+		return output;
 	}
 }

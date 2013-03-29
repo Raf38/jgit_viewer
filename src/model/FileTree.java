@@ -3,6 +3,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import java.io.*;
+import java.util.Vector;
 
 public class FileTree
 {
@@ -22,39 +23,70 @@ public class FileTree
 	public DefaultMutableTreeNode getDepotFileTree() throws Exception
 	{
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Repository");
-		BufferedReader reader = _git.execCommand("ls-tree --full-tree -r --name-only -- HEAD");
-		String line = null;
-		while ((line = reader.readLine()) != null)
+		Vector<String> data = _git.execCommand("ls-tree --full-tree -r --name-only -- HEAD");
+		for (String line : data)
 		{
-			DefaultMutableTreeNode current = top;
-			line = line.trim();
-			String dirs[] = line.split("/");
-			for (String s : dirs)
+			insertPathIntoTree(top, line.trim());
+		}
+		
+		if (_showDeletedFiles)
+		{
+			data = _git.execCommand("log --diff-filter=D --summary HEAD");
+			for (String line : data)
 			{
-				DefaultMutableTreeNode child = null;
+				String tokens[] = line.split(" ");
+				
+				System.out.println(line);
 				try
 				{
-					child = (DefaultMutableTreeNode)current.getFirstChild();
-				} catch (Exception e) {}
-				while(child != null)
-				{
-					if (s.equals(child.getUserObject()))
+					if (tokens.length == 5 && tokens[1].equals("delete") && tokens[2].equals("mode"))
 					{
-						current = child;
-						break;
-					} else
-					{
-						child = child.getNextSibling();
+						insertPathIntoTree(top, tokens[4].trim());
 					}
-				}
-				if (child == null)
+				} catch (Exception e)
 				{
-					DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(s);
-					current.add(newChild);
-					current = newChild;
+					System.err.println(e.getMessage());
 				}
 			}
 		}
+		
 		return top;
+	}
+	
+	private void insertDeletedFiles(DefaultMutableTreeNode top)
+	{
+		
+	}
+	
+	private void insertPathIntoTree(DefaultMutableTreeNode tree, String path)
+	{
+		DefaultMutableTreeNode current = tree;
+		String line = path.trim();
+		String dirs[] = line.split("/");
+		for (String s : dirs)
+		{
+			DefaultMutableTreeNode child = null;
+			try
+			{
+				child = (DefaultMutableTreeNode)current.getFirstChild();
+			} catch (Exception e) {}
+			while(child != null)
+			{
+				if (s.equals(child.getUserObject()))
+				{
+					current = child;
+					break;
+				} else
+				{
+					child = child.getNextSibling();
+				}
+			}
+			if (child == null)
+			{
+				DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(s);
+				current.add(newChild);
+				current = newChild;
+			}
+		}
 	}
 }

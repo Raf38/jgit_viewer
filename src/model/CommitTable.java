@@ -18,9 +18,8 @@ public class CommitTable
 		Vector<Vector<String>> data = new Vector<Vector<String>>();
 		try
 		{
-			BufferedReader reader = _git.execCommand("log --pretty=format:\"%h,%an,%ar,%s\" -- "+_pathFilter);
-			String line = null;
-			while ((line = reader.readLine()) != null)
+			Vector<String> gitOutput = _git.execCommand("log --pretty=format:\"%h,%an,%ar,%s\" -- "+_pathFilter);
+			for (String line : gitOutput)
 			{
 				data.add(data.size(),new Vector<String>(Arrays.asList(line.trim().split(","))));
 			}
