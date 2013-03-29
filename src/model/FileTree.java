@@ -4,6 +4,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
 import java.io.*;
+import java.util.Enumeration;
 import java.util.Vector;
 
 public class FileTree
@@ -12,12 +13,12 @@ public class FileTree
 	private boolean _showExistingFiles = true;
 	private GitCommandLine _git = null;
 	private DefaultTreeModel _treeModel;
-	private DefaultMutableTreeNode _treeNode;
+	private FileTreeNode _treeNode;
 	
 	public FileTree()
 	{
 		_git = new GitCommandLine();
-		_treeNode = new DefaultMutableTreeNode("Repository");
+		_treeNode = new FileTreeNode("Repository");
 		_treeModel = new DefaultTreeModel(_treeNode);
 	}
 	
@@ -43,9 +44,9 @@ public class FileTree
 		return _treeModel;
 	}
 	
-	public void updateTreeModel()
+	private FileTreeNode getFileTree()
 	{
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Repository");
+		FileTreeNode top = new FileTreeNode("Repository");
 		if (_showExistingFiles)
 		{
 			try
@@ -53,7 +54,7 @@ public class FileTree
 				Vector<String> data = _git.execCommand("ls-tree --full-tree -r --name-only -- HEAD");
 				for (String line : data)
 				{
-					insertPathIntoTree(top, line.trim());
+					insertPathIntoTree(top, line.trim(),false);
 				}
 			}
 			catch (Exception e) {}
@@ -68,12 +69,11 @@ public class FileTree
 				{
 					String tokens[] = line.split(" ");
 					
-					System.out.println(line);
 					try
 					{
 						if (tokens.length == 5 && tokens[1].equals("delete") && tokens[2].equals("mode"))
 						{
-							insertPathIntoTree(top, tokens[4].trim());
+							insertPathIntoTree(top, tokens[4].trim(), true);
 						}	
 					} catch (Exception e)
 					{
@@ -84,36 +84,82 @@ public class FileTree
 			catch (Exception e) {}
 		}
 		
-		_treeModel.setRoot(top);
+		return top;
+	}
+	
+	private void updateTreeNode(FileTreeNode dest, FileTreeNode src)
+	{
+		Vector<FileTreeNode> srcNodesToDelete = new Vector<FileTreeNode>();
+		//delete old and update existing 
+		for(int n=0;n<dest.getChildCount();n++)
+		{
+			FileTreeNode destNode = (FileTreeNode) dest.getChildAt(n);
+			boolean matched = false;
+			for(int m=0;m<src.getChildCount();m++)
+			{
+				FileTreeNode srcNode = (FileTreeNode) src.getChildAt(m);
+				if (destNode.getName().equals(srcNode.getName()))
+				{
+					destNode.setDeleted(srcNode.isDeleted());
+					updateTreeNode(destNode,srcNode);
+					srcNodesToDelete.add(srcNode);
+					matched = true;
+				}
+			}
+			if (!matched)
+			{
+				dest.remove(destNode);
+			}
+		}
+		
+		for(FileTreeNode n : srcNodesToDelete)
+		{
+			src.remove(n);
+		}
+		
+		for(int m=0;m<src.getChildCount();m++)
+		{
+			FileTreeNode srcNode = (FileTreeNode) src.getChildAt(m);
+			dest.add(srcNode);
+		}
+	}
+	
+	public void updateTreeModel()
+	{
+		FileTreeNode newTree = getFileTree();
+		FileTreeNode tree = (FileTreeNode)_treeModel.getRoot();
+		
+		//updateTreeNode(tree, newTree);
+		_treeModel.setRoot(newTree);
 		_treeModel.reload();
 	}
 	
-	private void insertPathIntoTree(DefaultMutableTreeNode tree, String path)
+	private void insertPathIntoTree(FileTreeNode tree, String path, boolean deleted)
 	{
-		DefaultMutableTreeNode current = tree;
+		FileTreeNode current = tree;
 		String line = path.trim();
 		String dirs[] = line.split("/");
 		for (String s : dirs)
 		{
-			DefaultMutableTreeNode child = null;
+			FileTreeNode child = null;
 			try
 			{
-				child = (DefaultMutableTreeNode)current.getFirstChild();
+				child = (FileTreeNode)current.getFirstChild();
 			} catch (Exception e) {}
 			while(child != null)
 			{
-				if (s.equals(child.getUserObject()))
+				if (s.equals(child.getName()))
 				{
 					current = child;
 					break;
 				} else
 				{
-					child = child.getNextSibling();
+					child = (FileTreeNode) child.getNextSibling();
 				}
 			}
 			if (child == null)
 			{
-				DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(s);
+				FileTreeNode newChild = new FileTreeNode(s, deleted);
 				current.add(newChild);
 				current = newChild;
 			}

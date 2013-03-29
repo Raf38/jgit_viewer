@@ -30,6 +30,12 @@ public class CommitTable
 	
 	public void setPathFilter(String path)
 	{
-		_pathFilter = path;
+		if (path == null)
+		{
+			_pathFilter = "";
+		} else
+		{
+			_pathFilter = path;
+		}
 	}
 }

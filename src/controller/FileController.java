@@ -7,6 +7,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import model.FileTreeNode;
+
 public class FileController implements ActionListener,TreeSelectionListener {
 
 	private model.Model _model;
@@ -44,14 +46,8 @@ public class FileController implements ActionListener,TreeSelectionListener {
 	
 	public void valueChanged(TreeSelectionEvent e)
 	{
-		TreePath tp = e.getPath();
-		Object[] treeNodes = tp.getPath();
-		String path = "";
-		for (int n=1;n<treeNodes.length;n++)
-		{
-			if (n>1) { path += "/"; }
-			path += (String)((DefaultMutableTreeNode)treeNodes[n]).getUserObject();
-		}
+		FileTreeNode node = (FileTreeNode) e.getPath().getLastPathComponent();
+		String path = node.getPathString();
 		_model.commit.setPathFilter(path);
 		_view._commitPanel.refresh();
 	}
