@@ -18,7 +18,7 @@ public class FilePanel extends JPanel {
 	JCheckBox _existingCheckbox = null;
 	JCheckBox _deletedCheckbox = null;
 	JTree _tree = null;
-	model.FileTree _model = null;
+	model.FileModel _model = null;
 	controller.FileController _controller = null;
 	
 	public FilePanel(model.Model model, controller.FileController controller)

@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.Enumeration;
 import java.util.Vector;
 
-public class FileTree
+public class FileModel
 {
 	private boolean _showDeletedFiles = false;
 	private boolean _showExistingFiles = true;
@@ -15,7 +15,7 @@ public class FileTree
 	private DefaultTreeModel _treeModel;
 	private FileTreeNode _treeNode;
 	
-	public FileTree()
+	public FileModel()
 	{
 		_git = new GitCommandLine();
 		_treeNode = new FileTreeNode("Repository");

@@ -3,11 +3,11 @@ package model;
 import java.io.BufferedReader;
 import java.util.*;
 
-public class References
+public class ReferencesModel
 {
 	private GitCommandLine _git = null;
 	
-	public References()
+	public ReferencesModel()
 	{
 		_git = new GitCommandLine();
 	}

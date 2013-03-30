@@ -3,12 +3,12 @@ package model;
 import java.io.BufferedReader;
 import java.util.*;
 
-public class CommitTable
+public class CommitModel
 {
 	private GitCommandLine _git = null;
 	private String _pathFilter = "";
 	
-	public CommitTable()
+	public CommitModel()
 	{
 		_git = new GitCommandLine();
 	}

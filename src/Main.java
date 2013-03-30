@@ -2,7 +2,7 @@ import javax.swing.UIManager;
 
 import model.*;
 
-import view.MainWindow;
+import view.MainFrame;
 
 public class Main {
 
@@ -10,7 +10,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		MainWindow w = new MainWindow(new model.Model());
+		MainFrame w = new MainFrame(new model.Model());
 	}
 
 }

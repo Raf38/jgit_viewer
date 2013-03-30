@@ -4,7 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 
-public class MainWindow extends JFrame {
+public class MainFrame extends JFrame {
 
 	private JPanel 			_mainPanel;
 	public FilePanel 		_filePanel;
@@ -12,7 +12,7 @@ public class MainWindow extends JFrame {
 	private ReferencesPanel _refsPanel;
 	private JSplitPane 		_splitPane;
 	
-	public MainWindow(model.Model model)
+	public MainFrame(model.Model model)
 	{
 		setTitle("JGit Viewer");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

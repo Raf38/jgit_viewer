@@ -12,9 +12,9 @@ import model.FileTreeNode;
 public class FileController implements ActionListener,TreeSelectionListener {
 
 	private model.Model _model;
-	private view.MainWindow _view;
+	private view.MainFrame _view;
 	
-	public FileController(model.Model model, view.MainWindow view)
+	public FileController(model.Model model, view.MainFrame view)
 	{
 		_view = view;
 		_model = model;
