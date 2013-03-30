@@ -44,14 +44,14 @@ public class FileModel
 		return _treeModel;
 	}
 	
-	private FileTreeNode getFileTree()
+	private FileTreeNode getFileTree(String reference)
 	{
 		FileTreeNode top = new FileTreeNode("Repository");
 		if (_showExistingFiles)
 		{
 			try
 			{
-				Vector<String> data = _git.execCommand("ls-tree --full-tree -r --name-only -- HEAD");
+				Vector<String> data = _git.execCommand("ls-tree --full-tree -r --name-only -- "+reference);
 				for (String line : data)
 				{
 					insertPathIntoTree(top, line.trim(),false);
@@ -64,7 +64,7 @@ public class FileModel
 		{
 			try
 			{
-				Vector<String> data = _git.execCommand("log --diff-filter=D --summary HEAD");
+				Vector<String> data = _git.execCommand("log --diff-filter=D --summary "+reference);
 				for (String line : data)
 				{
 					String tokens[] = line.split(" ");
@@ -86,50 +86,9 @@ public class FileModel
 		
 		return top;
 	}
-	
-	private void updateTreeNode(FileTreeNode dest, FileTreeNode src)
+	public void updateTreeModel(String reference)
 	{
-		Vector<FileTreeNode> srcNodesToDelete = new Vector<FileTreeNode>();
-		//delete old and update existing 
-		for(int n=0;n<dest.getChildCount();n++)
-		{
-			FileTreeNode destNode = (FileTreeNode) dest.getChildAt(n);
-			boolean matched = false;
-			for(int m=0;m<src.getChildCount();m++)
-			{
-				FileTreeNode srcNode = (FileTreeNode) src.getChildAt(m);
-				if (destNode.getName().equals(srcNode.getName()))
-				{
-					destNode.setDeleted(srcNode.isDeleted());
-					updateTreeNode(destNode,srcNode);
-					srcNodesToDelete.add(srcNode);
-					matched = true;
-				}
-			}
-			if (!matched)
-			{
-				dest.remove(destNode);
-			}
-		}
-		
-		for(FileTreeNode n : srcNodesToDelete)
-		{
-			src.remove(n);
-		}
-		
-		for(int m=0;m<src.getChildCount();m++)
-		{
-			FileTreeNode srcNode = (FileTreeNode) src.getChildAt(m);
-			dest.add(srcNode);
-		}
-	}
-	
-	public void updateTreeModel()
-	{
-		FileTreeNode newTree = getFileTree();
-		FileTreeNode tree = (FileTreeNode)_treeModel.getRoot();
-		
-		//updateTreeNode(tree, newTree);
+		FileTreeNode newTree = getFileTree(reference);
 		_treeModel.setRoot(newTree);
 		_treeModel.reload();
 	}

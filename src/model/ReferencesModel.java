@@ -6,10 +6,25 @@ import java.util.*;
 public class ReferencesModel
 {
 	private GitCommandLine _git = null;
+	private String _currentReference = "HEAD";
 	
 	public ReferencesModel()
 	{
 		_git = new GitCommandLine();
+		
+		try
+		{
+			Vector<String> gitData = _git.execCommand("branch --all");
+			for (String line : gitData)
+			{
+				if (line.substring(0, 2).equals("* "))
+				{
+					_currentReference = line.substring(2,line.length()).trim();
+					break;
+				}
+			}
+		}
+		catch (Exception e) {}
 	}
 	
 	public Vector<String> getReferences()
@@ -29,18 +44,11 @@ public class ReferencesModel
 	
 	public String getCurrentReference()
 	{
-		try
-		{
-			Vector<String> gitData = _git.execCommand("branch --all");
-			for (String line : gitData)
-			{
-				if (line.substring(0, 2).equals("* "))
-				{
-					return line.substring(2,line.length()).trim();
-				}
-			}
-		}
-		catch (Exception e) {}
-		return "";
+		return _currentReference;
+	}
+
+	public void setCurrentReference(String newRef) {
+		// TODO Auto-generated method stub
+		_currentReference = newRef;
 	}
 }

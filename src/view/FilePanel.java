@@ -18,12 +18,12 @@ public class FilePanel extends JPanel {
 	JCheckBox _existingCheckbox = null;
 	JCheckBox _deletedCheckbox = null;
 	JTree _tree = null;
-	model.FileModel _model = null;
+	model.Model _model = null;
 	controller.FileController _controller = null;
 	
 	public FilePanel(model.Model model, controller.FileController controller)
 	{
-		_model = model.file;
+		_model = model;
 		_controller = controller;
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		
@@ -38,7 +38,7 @@ public class FilePanel extends JPanel {
 		_deletedCheckbox.setActionCommand("DeletedToggle");
 		_deletedCheckbox.addActionListener(_controller);
 		
-		_tree = new JTree(_model.getTreeModel());
+		_tree = new JTree(_model.file.getTreeModel());
 		_tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		_tree.addTreeSelectionListener(_controller);
 		JScrollPane scrollPane = new JScrollPane(_tree);
@@ -52,8 +52,8 @@ public class FilePanel extends JPanel {
 	
 	public void refresh()
 	{
-		_existingCheckbox.setSelected(_model.showExistingFiles());
-		_deletedCheckbox.setSelected(_model.showDeletedFiles());
+		_existingCheckbox.setSelected(_model.file.showExistingFiles());
+		_deletedCheckbox.setSelected(_model.file.showDeletedFiles());
 		
 		FileTreeNode rootNode = (FileTreeNode)_tree.getModel().getRoot();
 		Enumeration e = _tree.getExpandedDescendants(new TreePath(rootNode));
@@ -67,8 +67,17 @@ public class FilePanel extends JPanel {
 				String s = tn.getPathString();
 				expandedPaths.add(tn.getPathString());
 			}
-		}		
-		_model.updateTreeModel();
+		}	
+		String selectedPath = null;
+		try
+		{
+			FileTreeNode tn = (FileTreeNode)_tree.getSelectionPath().getLastPathComponent();
+			selectedPath = tn.getPathString();
+		}
+		catch (Exception ex) {}
+		
+		_model.file.updateTreeModel(_model.references.getCurrentReference());
+		
 		rootNode = (FileTreeNode)_tree.getModel().getRoot();
 		for(String s : expandedPaths)
 		{
@@ -78,5 +87,11 @@ public class FilePanel extends JPanel {
 				_tree.expandPath(tp);
 			} catch (Exception ex) { }
 		}
+		try
+		{
+			TreePath tp = new TreePath(rootNode.getNodeFromPath(selectedPath).getPath());
+			_tree.setSelectionPath(tp);
+		}
+		catch (Exception ex) {}
 	}
 }

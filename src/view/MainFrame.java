@@ -19,7 +19,7 @@ public class MainFrame extends JFrame {
 		
 		_filePanel = new FilePanel(model, new controller.FileController(model,this));
 		_commitPanel = new CommitPanel(model);
-		_refsPanel = new ReferencesPanel(model);
+		_refsPanel = new ReferencesPanel(model, new controller.ReferencesController(model, this));
 		
 		_splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		_splitPane.setLeftComponent(_filePanel);

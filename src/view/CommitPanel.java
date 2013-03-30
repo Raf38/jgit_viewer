@@ -27,7 +27,7 @@ public class CommitPanel extends JPanel {
 		headers.add(headers.size(),"When");
 		headers.add(headers.size(),"Message");
 		
-		_tableData = model.commit.getCommitData();
+		_tableData = model.commit.getCommitData(_model.references.getCurrentReference());
 		_table = new JTable(_tableData,headers);
 		
 		JScrollPane scrollPane = new JScrollPane(_table);
@@ -42,7 +42,7 @@ public class CommitPanel extends JPanel {
 		{
 			tableModel.removeRow(0);
 		}
-		_tableData = _model.commit.getCommitData();
+		_tableData = _model.commit.getCommitData(_model.references.getCurrentReference());
 		for (Vector<String> row : _tableData)
 		{
 			tableModel.addRow(row);

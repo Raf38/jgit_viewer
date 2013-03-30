@@ -10,7 +10,7 @@ public class ReferencesPanel extends JPanel {
 	JComboBox<String> _combo = null;
 	model.Model _model = null;
 	
-	public ReferencesPanel(model.Model model)
+	public ReferencesPanel(model.Model model, controller.ReferencesController controller)
 	{
 		_model = model;
 		setLayout(new BorderLayout());
@@ -26,8 +26,7 @@ public class ReferencesPanel extends JPanel {
 			}
 		}
 		_combo.setName("combo name");
-		//_combo.addActionListener(new controller.FileFilterActionListener());
-		//_combo.setPreferredSize(new Dimension(600,30));
+		_combo.addActionListener(controller);
 		add(_combo);
 	}	
 

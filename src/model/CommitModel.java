@@ -13,12 +13,12 @@ public class CommitModel
 		_git = new GitCommandLine();
 	}
 	
-	public Vector<Vector<String>> getCommitData()
+	public Vector<Vector<String>> getCommitData(String reference)
 	{
 		Vector<Vector<String>> data = new Vector<Vector<String>>();
 		try
 		{
-			Vector<String> gitOutput = _git.execCommand("log --pretty=format:%h,%an,%ar,%s -- "+_pathFilter);
+			Vector<String> gitOutput = _git.execCommand("log --pretty=format:%h,%an,%ar,%s "+reference+" -- "+_pathFilter);
 			for (String line : gitOutput)
 			{
 				data.add(data.size(),new Vector<String>(Arrays.asList(line.trim().split(","))));
