@@ -29,9 +29,8 @@ public class CommitPanel extends JPanel {
 		
 		_tableData = model.commit.getCommitData(_model.references.getCurrentReference());
 		_table = new JTable(_tableData,headers);
-		
 		JScrollPane scrollPane = new JScrollPane(_table);
-		add(scrollPane,BorderLayout.PAGE_START);
+		add(scrollPane);
 	}
 	
 	public void refresh()
