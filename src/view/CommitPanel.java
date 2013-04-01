@@ -28,7 +28,13 @@ public class CommitPanel extends JPanel {
 		headers.add(headers.size(),"Message");
 		
 		_tableData = model.commit.getCommitData(_model.references.getCurrentReference());
-		_table = new JTable(_tableData,headers);
+		_table = new JTable(_tableData,headers) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		_table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		_table.getSelectionModel().addListSelectionListener(controller);
 		JScrollPane scrollPane = new JScrollPane(_table);

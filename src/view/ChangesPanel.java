@@ -15,7 +15,7 @@ public class ChangesPanel extends JPanel {
 	private model.Model _model;
 	private JTable _table = null;
 	
-	public ChangesPanel(model.Model model)
+	public ChangesPanel(model.Model model, controller.ChangesController controller)
 	{		
 		_model = model;
 		setLayout(new BorderLayout());
@@ -23,7 +23,15 @@ public class ChangesPanel extends JPanel {
 		headers.add(headers.size(),"Modification");
 		headers.add(headers.size(),"Path");
 		Vector<Vector<String>> data = _model.changes.getChanges();
-		_table = new JTable(data,headers);
+		_table = new JTable(data,headers) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
+		_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		_table.addMouseListener(controller);
 		JScrollPane scrollPane = new JScrollPane(_table);
 		add(scrollPane);
 	}
@@ -42,5 +50,10 @@ public class ChangesPanel extends JPanel {
 			tableModel.addRow(row);
 		}
 		tableModel.fireTableDataChanged();
+	}
+
+	public String getSelectedPath() {
+		int[] index = _table.getSelectedRows();
+		return (String) _table.getModel().getValueAt(index[0], 1);
 	}
 }

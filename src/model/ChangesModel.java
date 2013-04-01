@@ -37,9 +37,19 @@ public class ChangesModel
 		_startReference = ref;
 	}
 	
+	public String getFirstReference()
+	{
+		return _startReference;
+	}
+	
 	public void setLastReference(String ref)
 	{
 		_endReference = ref;
+	}
+	
+	public String getLastReference()
+	{
+		return _endReference;
 	}
 	
 	public void setOnlyReference(String ref)
