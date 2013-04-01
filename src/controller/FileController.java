@@ -49,7 +49,9 @@ public class FileController implements ActionListener,TreeSelectionListener {
 		FileTreeNode node = (FileTreeNode) e.getPath().getLastPathComponent();
 		String path = node.getPathString();
 		_model.commit.setPathFilter(path);
+		_model.changes.setPathFilter(path);
 		_view._commitPanel.refresh();
+		_view._changesPanel.refresh();
 	}
 
 }

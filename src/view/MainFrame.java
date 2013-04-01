@@ -10,21 +10,32 @@ public class MainFrame extends JFrame {
 	public FilePanel 		_filePanel;
 	public CommitPanel 	_commitPanel;
 	private ReferencesPanel _refsPanel;
+	public ChangesPanel	_changesPanel;
 	private JSplitPane 		_splitPane;
+	private JSplitPane 		_splitPane2;
 	
 	public MainFrame(model.Model model)
 	{
 		setTitle("JGit Viewer");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		_filePanel = new FilePanel(model, new controller.FileController(model,this));
-		_commitPanel = new CommitPanel(model);
-		_refsPanel = new ReferencesPanel(model, new controller.ReferencesController(model, this));
+		model.changes.getChanges();
 		
+		_refsPanel = new ReferencesPanel(model, new controller.ReferencesController(model, this));
+		_filePanel = new FilePanel(model, new controller.FileController(model,this));
+		_commitPanel = new CommitPanel(model, new controller.CommitController(model,this));
+		_changesPanel = new ChangesPanel(model);
+		
+		_splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		_splitPane2.setTopComponent(_commitPanel);
+		_splitPane2.setBottomComponent(_changesPanel);
+		_splitPane2.setContinuousLayout(true);
+		_splitPane2.setDividerLocation(0.5f);
 		_splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		_splitPane.setLeftComponent(_filePanel);
-		_splitPane.setRightComponent(_commitPanel);
+		_splitPane.setRightComponent(_splitPane2);
 		_splitPane.setContinuousLayout(true);
+		
 		_mainPanel = (JPanel)getContentPane();
 //		_mainPanel.setLayout(new BorderLayout());
 		_mainPanel.add(_refsPanel,BorderLayout.PAGE_START);
