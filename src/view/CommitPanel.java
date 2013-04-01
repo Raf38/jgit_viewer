@@ -63,6 +63,9 @@ public class CommitPanel extends JPanel {
 		
 	public void refresh()
 	{
+		String firstCommit = getFirstSelectedCommit();
+		String lastCommit = getLastSelectedCommit();
+		
 		DefaultTableModel tableModel = (DefaultTableModel)_table.getModel();
 		int numRows = tableModel.getRowCount();
 		for (int n=0;n<numRows;n++)
@@ -70,10 +73,24 @@ public class CommitPanel extends JPanel {
 			tableModel.removeRow(0);
 		}
 		_tableData = _model.commit.getCommitData(_model.references.getCurrentReference());
+		int firstSelectedRow = -1;
+		int lastSelectedRow = -1;
 		for (Vector<String> row : _tableData)
 		{
 			tableModel.addRow(row);
+			if (row.get(0).equals(firstCommit))
+			{
+				firstSelectedRow = tableModel.getRowCount()-1;
+			}
+			if (row.get(0).equals(lastCommit))
+			{
+				lastSelectedRow = tableModel.getRowCount()-1;
+			}
 		}
 		tableModel.fireTableDataChanged();
+		if (firstSelectedRow >= 0 && lastSelectedRow >= 0)
+		{
+			_table.getSelectionModel().setSelectionInterval(firstSelectedRow, lastSelectedRow);
+		}
 	}
 }

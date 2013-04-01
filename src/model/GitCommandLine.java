@@ -40,7 +40,7 @@ public class GitCommandLine
 		{
 			for(String s : output)
 			{
-				System.err.print(s);
+				System.err.println(s);
 			}
 			throw new Exception();
 		}
